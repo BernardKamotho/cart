@@ -12,7 +12,9 @@ import AboutUs from "./components/Aboutus";
 import Notfound from "./components/Notfound";
 import Cart from "./components/Cart"; 
 import Chatbox from "./components/Chatbox";
-import Mpesapayment from "./components/Makepayment";
+
+import "@fortawesome/fontawesome-free/css/all.min.css";
+
 
 function App() {
   return (
@@ -31,7 +33,6 @@ function App() {
             <Route path="/signup" element={<Signup />} />
             <Route path="/addproducts" element={<Addproducts />} />
             <Route path="/makepayment" element={<Makepayment />} />
-            <Route path="/payment" element={<Mpesapayment />} />
             <Route path="/aboutus" element={<AboutUs />} />
             <Route path="/chatbox" element={<Chatbox />} />
             <Route path="/cart" element={<Cart />} />

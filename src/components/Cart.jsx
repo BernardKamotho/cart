@@ -21,12 +21,14 @@ const Cart = () => {
   const clearCart = () => {
     localStorage.removeItem("cart");
     setCartItems([]);
+    window.dispatchEvent(new Event("cartUpdated")); // 🔄 Update Navbar
   };
 
   const removeItem = (indexToRemove) => {
     const updatedCart = cartItems.filter((_, index) => index !== indexToRemove);
     localStorage.setItem("cart", JSON.stringify(updatedCart));
     setCartItems(updatedCart);
+    window.dispatchEvent(new Event("cartUpdated")); // 🔄 Update Navbar
   };
 
   const proceedToCheckout = () => {

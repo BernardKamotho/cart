@@ -1,15 +1,35 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
+import { useEffect, useState } from "react";
 
 const Navbar = () => {
+  const [cartCount, setCartCount] = useState(0);
+  const location = useLocation();
+
+  useEffect(() => {
+    const updateCartCount = () => {
+      const cartItems = JSON.parse(localStorage.getItem("cart")) || [];
+      setCartCount(cartItems.length);
+    };
+
+    // Initial load
+    updateCartCount();
+
+    // Listen for custom "cartUpdated" event
+    window.addEventListener("cartUpdated", updateCartCount);
+
+    // Cleanup
+    return () => {
+      window.removeEventListener("cartUpdated", updateCartCount);
+    };
+  }, [location]);
+
   return (
     <>
       <nav className="navbar navbar-expand-md navbar-light bg-light shadow-sm mt-1">
-        {/* Brand Logo */}
         <Link to="/" className="navbar-brand fw-bold">
           Frankizah<span className="text-danger">Shoes</span>
         </Link>
 
-        {/* Mobile Menu Button */}
         <button
           className="navbar-toggler"
           type="button"
@@ -19,7 +39,6 @@ const Navbar = () => {
           <span className="navbar-toggler-icon"></span>
         </button>
 
-        {/* Navbar Links */}
         <div className="collapse navbar-collapse" id="navbarcontents">
           <ul className="navbar-nav me-auto">
             <li className="nav-item">
@@ -31,13 +50,19 @@ const Navbar = () => {
             <li className="nav-item">
               <b><Link to="/chatbox" className="nav-link">Chatbox</Link></b>
             </li>
-           
           </ul>
 
-          {/* Authorization Links */}
           <ul className="navbar-nav ms-auto">
-          <li className="nav-item">
-              <b><Link to="/cart" className="nav-link">Cart</Link></b>
+            <li className="nav-item">
+              <b>
+                <Link to="/cart" className="nav-link d-flex align-items-center">
+                  <i className="fas fa-shopping-cart me-1"></i>
+                  Cart
+                  {cartCount > 0 && (
+                    <span className="badge bg-danger ms-2">{cartCount}</span>
+                  )}
+                </Link>
+              </b>
             </li>
             <li className="nav-item">
               <b><Link to="/aboutus" className="nav-link">About us</Link></b>
@@ -48,7 +73,6 @@ const Navbar = () => {
             <li className="nav-item">
               <Link to="/signup" className="btn btn-primary">Sign UP</Link>
             </li>
-          
           </ul>
         </div>
       </nav>

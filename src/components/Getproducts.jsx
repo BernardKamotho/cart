@@ -1,11 +1,10 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Footer from "./Footer";
 import ImageCarousel from "./Carousel";
 
 const Getproducts = () => {
-  // Initialize Hooks
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -14,7 +13,6 @@ const Getproducts = () => {
   const navigate = useNavigate();
   const img_url = "https://frankizah.pythonanywhere.com/static/images/";
 
-  // Fetch products from API
   const getproducts = async () => {
     setLoading(true);
     try {
@@ -32,17 +30,19 @@ const Getproducts = () => {
     getproducts();
   }, []);
 
-  // Filter products based on search term
   const filtered_products = products.filter((item) =>
     item.product_name.toLowerCase().includes(search.toLowerCase()) ||
     item.product_description.toLowerCase().includes(search.toLowerCase())
   );
 
-  // Add product to localStorage cart
   const addToCart = (product) => {
     const existingCart = JSON.parse(localStorage.getItem("cart")) || [];
     existingCart.push(product);
     localStorage.setItem("cart", JSON.stringify(existingCart));
+
+    // 🔔 Notify other components that cart was updated
+    window.dispatchEvent(new Event("cartUpdated"));
+
     alert(`Added "${product.product_name}" to cart.`);
   };
 
@@ -61,16 +61,12 @@ const Getproducts = () => {
         />
       </div>
 
-      {/* Display Loading or Error Messages */}
       {loading && <p className="text-info text-center">Please wait, we are retrieving the products...</p>}
       {error && <p className="text-danger text-center">{error}</p>}
-
-      {/* No results message */}
       {!loading && filtered_products.length === 0 && (
         <p className="text-muted text-center">No products found.</p>
       )}
 
-      {/* Products Grid */}
       <div className="row g-4">
         {filtered_products.map((product) => (
           <div key={product.id} className="col-md-3 justify-content-center mb-4">
@@ -86,12 +82,6 @@ const Getproducts = () => {
                 <p className="card-text text-muted">{product.product_description}</p>
                 <b className="text-warning">{product.product_cost} KES</b>
                 <div className="mt-3">
-                  <button
-                    className="btn btn-success w-100"
-                    onClick={() => navigate("/payment", { state: { product } })}
-                  >
-                    Buy Now
-                  </button>
                   <button
                     className="btn btn-outline-danger mt-2 w-100 fw-semibold"
                     onClick={() => addToCart(product)}
